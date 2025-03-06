@@ -108,7 +108,7 @@ Page<PageData, WechatMiniprogram.Page.CustomOption>({
             content: [
               {
                 type: 'text',
-                text: '请分析这张图片中的食物，并告诉我它的大致卡路里含量。如果图片中没有食物，请直接回复"未检测到食物"。如果有食物，请用以下格式回复：食物名称：xxx\\n预计卡路里：xxx'
+                text: '请分析图片中的食物，并按以下格式回复（只需要回复这两行，不要其他任何解释）：\n食物名称：[食物名称]\n预计卡路里：约[数字]卡路里\n\n如果无法识别食物，请只回复：未检测到食物'
               },
               {
                 type: 'image_url',
@@ -167,8 +167,8 @@ Page<PageData, WechatMiniprogram.Page.CustomOption>({
     try {
       console.log('正在解析内容:', content);
       
-      // 检查是否包含"没有食物"或类似的提示
-      if (content.includes('没有食物') || content.includes('未检测到食物')) {
+      // 检查是否包含"未检测到食物"
+      if (content.includes('未检测到食物')) {
         this.setData({
           errorMessage: '未检测到食物，请重新拍摄',
           foodName: '',
@@ -177,12 +177,13 @@ Page<PageData, WechatMiniprogram.Page.CustomOption>({
         return;
       }
 
-      const foodNameMatch = content.match(/食物名称：(.+?)(?=\n|$)/);
-      const caloriesMatch = content.match(/预计卡路里：(.+?)(?=\n|$)/);
+      // 使用更精确的正则表达式匹配
+      const foodNameMatch = content.match(/食物名称：([^\n]+)/);
+      const caloriesMatch = content.match(/预计卡路里：([^\n]+)/);
 
       console.log('匹配结果:', { foodNameMatch, caloriesMatch });
 
-      if (foodNameMatch && caloriesMatch) {
+      if (foodNameMatch?.[1] && caloriesMatch?.[1]) {
         const foodName = foodNameMatch[1].trim();
         const calories = caloriesMatch[1].trim();
         console.log('解析结果:', { foodName, calories });
@@ -202,7 +203,9 @@ Page<PageData, WechatMiniprogram.Page.CustomOption>({
     } catch (error) {
       console.error('解析响应失败:', error);
       this.setData({
-        errorMessage: '解析失败，请重试',
+        errorMessage: typeof error === 'object' && error !== null && 'message' in error 
+          ? String(error.message) 
+          : '解析失败，请重试',
         foodName: '',
         calories: ''
       });

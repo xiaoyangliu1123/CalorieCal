@@ -2,26 +2,45 @@
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     <view class="content">
-      <view class="image-container" wx:if="{{tempImagePath}}">
-        <image src="{{tempImagePath}}" mode="aspectFit" class="selected-image"></image>
-      </view>
-      
-      <view class="result-container" wx:if="{{calories}}">
-        <view class="result-card">
-          <text class="result-title">预计卡路里</text>
-          <text class="calories">{{calories}} 千卡</text>
-          <text class="food-name" wx:if="{{foodName}}">食物：{{foodName}}</text>
+      <!-- 图片显示区域 -->
+      <block wx:if="{{tempImagePath}}">
+        <view class="preview-container">
+          <image src="{{tempImagePath}}" mode="aspectFit" class="preview-image"></image>
         </view>
-      </view>
 
+        <!-- 结果显示区域 -->
+        <view class="result-container" wx:if="{{foodName || calories}}">
+          <view class="result-card">
+            <view class="food-info">
+              <text class="food-name" wx:if="{{foodName}}">{{foodName}}</text>
+            </view>
+            <view class="food-info">
+              <text class="calories-text" wx:if="{{calories}}">{{calories}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 重新选择按钮 -->
+        <view class="action-area">
+          <button class="select-button" bindtap="chooseImage">
+            <text class="button-text">重新选择</text>
+          </button>
+        </view>
+      </block>
+
+      <!-- 空状态 -->
+      <block wx:else>
+        <view class="empty-state">
+          <button class="select-button" bindtap="chooseImage">
+            <text class="button-icon">+</text>
+            <text class="button-text">选择图片</text>
+          </button>
+        </view>
+      </block>
+
+      <!-- 错误提示 -->
       <view class="error-message" wx:if="{{errorMessage}}">
         {{errorMessage}}
-      </view>
-
-      <view class="button-container">
-        <button class="select-button" bindtap="chooseImage">
-          <text class="button-text">选择图片</text>
-        </button>
       </view>
     </view>
   </view>
