@@ -3,7 +3,8 @@ Page({
     tempImagePath: '',
     foodName: '',
     calories: '',
-    errorMessage: ''
+    errorMessage: '',
+    isLoading: false  // 添加加载状态
   },
 
   // 处理API返回的数据
@@ -14,62 +15,32 @@ Page({
       const content = response.choices[0].message.content;
       console.log('AI返回内容:', content);  // 调试日志
 
-      // 尝试提取食物名称和卡路里信息
-      let foodName = '';
-      let calories = '';
+      // 使用简单的格式匹配
+      const foodNameMatch = content.match(/食物名称：(.+)$/m);
+      const caloriesMatch = content.match(/卡路里：(.+)$/m);
 
-      // 提取食物名称 - 尝试多种可能的格式
-      const foodNamePatterns = [
-        /食物名称：(.+?)[\n。]/,
-        /这是一道(.+?)[\n。]/,
-        /图片展示的是(.+?)[\n。]/,
-        /图片中的食物是(.+?)[\n。]/
-      ];
-
-      for (const pattern of foodNamePatterns) {
-        const match = content.match(pattern);
-        if (match) {
-          foodName = match[1].trim();
-          break;
-        }
-      }
-
-      // 提取卡路里信息 - 尝试多种可能的格式
-      const caloriesPatterns = [
-        /预计卡路里：(.+?)[\n。]/,
-        /卡路里：(.+?)[\n。]/,
-        /热量：(.+?)[\n。]/,
-        /约(.+?)卡路里/
-      ];
-
-      for (const pattern of caloriesPatterns) {
-        const match = content.match(pattern);
-        if (match) {
-          calories = match[1].trim();
-          break;
-        }
-      }
-
-      // 如果找到了任何信息，就更新界面
-      if (foodName || calories) {
+      if (foodNameMatch || caloriesMatch) {
         this.setData({
-          foodName: foodName || '未知食物',
-          calories: calories || '无法估算',
-          errorMessage: ''
+          foodName: foodNameMatch ? foodNameMatch[1].trim() : '未知食物',
+          calories: caloriesMatch ? caloriesMatch[1].trim() : '无法估算',
+          errorMessage: '',
+          isLoading: false
         });
 
         console.log('设置数据:', {
-          foodName: foodName || '未知食物',
-          calories: calories || '无法估算'
+          foodName: foodNameMatch ? foodNameMatch[1].trim() : '未知食物',
+          calories: caloriesMatch ? caloriesMatch[1].trim() : '无法估算'
         });
       } else {
         this.setData({
-          errorMessage: '无法识别食物信息'
+          errorMessage: '无法识别食物信息',
+          isLoading: false
         });
       }
     } else {
       this.setData({
-        errorMessage: '解析返回数据失败'
+        errorMessage: '解析返回数据失败',
+        isLoading: false
       });
     }
   },
@@ -84,7 +55,8 @@ Page({
       success: function (res) {
         that.setData({
           tempImagePath: res.tempFilePaths[0],
-          errorMessage: ''
+          errorMessage: '',
+          isLoading: true  // 开始加载
         });
 
         // 先将图片转为 base64
@@ -114,7 +86,7 @@ Page({
                       },
                       {
                         type: 'text',
-                        text: '请分析这张图片中的食物，并告诉我：\n1. 食物名称（请用"食物名称："开头）\n2. 预计卡路里（请用"预计卡路里："开头）'
+                        text: '请分析这张图片中的食物，并按照以下格式回复（每项单独一行）：\n食物名称：[食物名称]\n卡路里：[预计卡路里，请包含单位]'
                       }
                     ]
                   }
@@ -134,7 +106,8 @@ Page({
               fail: function (error) {
                 console.error('API调用失败:', error);
                 that.setData({
-                  errorMessage: '调用API失败，请重试'
+                  errorMessage: '调用API失败，请重试',
+                  isLoading: false
                 });
               }
             });
@@ -142,7 +115,8 @@ Page({
           fail: function (error) {
             console.error('读取图片失败:', error);
             that.setData({
-              errorMessage: '读取图片失败，请重试'
+              errorMessage: '读取图片失败，请重试',
+              isLoading: false
             });
           }
         });
@@ -150,7 +124,8 @@ Page({
       fail: function (error) {
         console.error('选择图片失败:', error);
         that.setData({
-          errorMessage: '选择图片失败，请重试'
+          errorMessage: '选择图片失败，请重试',
+          isLoading: false
         });
       }
     });

@@ -1,12 +1,15 @@
 <!--index.wxml-->
-<navigation-bar title="食物卡路里计算器"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     <view class="content">
       <!-- 图片显示区域 -->
       <block wx:if="{{tempImagePath}}">
-        <view class="preview-container">
+        <view class="preview-container {{isLoading ? 'loading' : ''}}">
           <image src="{{tempImagePath}}" mode="aspectFit" class="preview-image"></image>
+          <view wx:if="{{isLoading}}" class="loading-overlay">
+            <view class="loading-spinner"></view>
+            <text class="loading-text">正在分析...</text>
+          </view>
         </view>
 
         <!-- 结果显示区域 -->
@@ -23,7 +26,7 @@
 
         <!-- 重新选择按钮 -->
         <view class="action-area">
-          <button class="select-button" bindtap="chooseImage">
+          <button class="select-button {{isLoading ? 'disabled' : ''}}" bindtap="{{!isLoading ? 'chooseImage' : ''}}" disabled="{{isLoading}}">
             <text class="button-text">重新选择</text>
           </button>
         </view>

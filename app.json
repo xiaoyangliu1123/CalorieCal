@@ -5,7 +5,7 @@
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom",
-    "navigationBarTitleText": "食物卡路里计算器",
+    "navigationBarTitleText": "Calorie",
     "navigationBarBackgroundColor": "#6a11cb",
     "backgroundColor": "#f8f9fa"
   },
