@@ -1,4 +1,5 @@
 <!--index.wxml-->
+<navigation-bar title="食物卡路里计算器"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     <view class="content">
