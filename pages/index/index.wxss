@@ -6,6 +6,25 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-60deg);
+  font-size: 300rpx;
+  font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.123);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 10rpx;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
 .header {
@@ -37,6 +56,8 @@
   justify-content: center;
   width: 100%;
   margin-top: -100rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .preview-container {
@@ -153,7 +174,7 @@
 }
 
 .food-name {
-  font-size: 48rpx;
+  font-size: 43rpx;
   color: #ffffff;
   font-weight: 600;
   text-align: center;

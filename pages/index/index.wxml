@@ -1,6 +1,7 @@
 <!--index.wxml-->
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
+    <view class="background-text">Calorie</view>
     <view class="content">
       <!-- 图片显示区域 -->
       <block wx:if="{{tempImagePath}}">

@@ -1,8 +1,0 @@
-<view class="navigation-bar" style="padding-top: {{statusBarHeight}}px;">
-  <view class="navigation-bar__inner" style="height: {{navBarHeight}}px;">
-    <view class="navigation-bar__left" wx:if="{{back}}" bindtap="goBack">
-      <view class="navigation-bar__back"></view>
-    </view>
-    <view class="navigation-bar__title">{{title}}</view>
-  </view>
-</view>
